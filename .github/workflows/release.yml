@@ -59,14 +59,14 @@ jobs:
       matrix:
         include:
           # windows
-          - name: windows-amd64
-            goos: windows
-            goarch: amd64
-            goamd64: v1
-          - name: windows-amd64-v3
-            goos: windows
-            goarch: amd64
-            goamd64: v3
+          #- name: windows-amd64
+          #  goos: windows
+          #  goarch: amd64
+          #  goamd64: v1
+          #- name: windows-amd64-v3
+          #  goos: windows
+          #  goarch: amd64
+          #  goamd64: v3
           # - name: windows-386
           #   goos: windows
           #   goarch: 386
