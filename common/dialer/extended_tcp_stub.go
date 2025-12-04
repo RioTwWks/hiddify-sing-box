@@ -10,6 +10,13 @@ import (
 	N "github.com/sagernet/sing/common/network"
 )
 
+// Custom TCP dialer with extra features such as "TLS Fragmentation" (TFO disabled on Windows)
+type ExtendedTCPDialer struct {
+	net.Dialer
+	DisableTFO  bool
+	TLSFragment *TLSFragment
+}
+
 func (d *ExtendedTCPDialer) DialContext(ctx context.Context, network string, destination M.Socksaddr) (net.Conn, error) {
 	if d.TLSFragment == nil || !d.TLSFragment.Enabled || N.NetworkName(network) != N.NetworkTCP {
 		switch N.NetworkName(network) {
