@@ -99,7 +99,7 @@ jobs:
     strategy:
       matrix:
         include:
-           windows
+          # windows
           - name: windows-amd64
             goos: windows
             goarch: amd64
