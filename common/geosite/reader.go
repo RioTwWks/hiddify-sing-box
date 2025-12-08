@@ -8,6 +8,22 @@ import (
 	"github.com/sagernet/sing/common/rw"
 )
 
+// readCounter wraps io.Reader to count bytes read
+type readCounter struct {
+	io.Reader
+	count int64
+}
+
+func (r *readCounter) Read(p []byte) (n int, err error) {
+	n, err = r.Reader.Read(p)
+	r.count += int64(n)
+	return n, err
+}
+
+func (r *readCounter) Count() int64 {
+	return r.count
+}
+
 type Reader struct {
 	reader       io.ReadSeeker
 	domainIndex  map[string]int
@@ -85,7 +101,7 @@ func (r *Reader) Read(code string) ([]Item, error) {
 	if err != nil {
 		return nil, err
 	}
-	counter := &rw.ReadCounter{Reader: r.reader}
+	counter := &readCounter{Reader: r.reader}
 	domain := make([]Item, r.domainLength[code])
 	for i := range domain {
 		var (

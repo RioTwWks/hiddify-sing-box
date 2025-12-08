@@ -16,6 +16,32 @@ import (
 	"go4.org/netipx"
 )
 
+// varbinReader wraps io.Reader to implement varbin.Reader interface
+type varbinReader struct {
+	io.Reader
+	buf [1]byte
+}
+
+func (r *varbinReader) ReadByte() (byte, error) {
+	_, err := r.Read(r.buf[:])
+	if err != nil {
+		return 0, err
+	}
+	return r.buf[0], nil
+}
+
+// varbinWriter wraps io.Writer to implement varbin.Writer interface
+type varbinWriter struct {
+	io.Writer
+	buf [1]byte
+}
+
+func (w *varbinWriter) WriteByte(c byte) error {
+	w.buf[0] = c
+	_, err := w.Write(w.buf[:])
+	return err
+}
+
 var MagicBytes = [3]byte{0x53, 0x52, 0x53} // SRS
 
 const (
@@ -153,7 +179,8 @@ func readDefaultRule(reader io.Reader, recovery bool) (rule option.DefaultHeadle
 			rule.Network, err = readRuleItemString(reader)
 		case ruleItemDomain:
 			var matcher *domain.Matcher
-			matcher, err = domain.ReadMatcher(reader)
+			varbinR := &varbinReader{Reader: reader}
+			matcher, err = domain.ReadMatcher(varbinR)
 			if err != nil {
 				return
 			}
@@ -233,7 +260,11 @@ func writeDefaultRule(writer io.Writer, rule option.DefaultHeadlessRule) error {
 		if err != nil {
 			return err
 		}
-		err = domain.NewMatcher(rule.Domain, rule.DomainSuffix).Write(writer)
+		domainList := []string(rule.Domain)
+		suffixList := []string(rule.DomainSuffix)
+		matcher := domain.NewMatcher(domainList, suffixList, false)
+		varbinW := &varbinWriter{Writer: writer}
+		err = matcher.Write(varbinW)
 		if err != nil {
 			return err
 		}
