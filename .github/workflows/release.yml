@@ -53,7 +53,9 @@ jobs:
             ~/go/pkg/mod
           key: go118-${{ hashFiles('**/go.sum') }}
       - name: Update go.sum
-        run: go mod tidy
+        run: |
+          go mod download
+          go mod tidy
       - name: Run Test
         run: make
   cross:
@@ -184,7 +186,9 @@ jobs:
         with:
           go-version: ${{ steps.version.outputs.go_version }}
       - name: Update go.sum
-        run: go mod tidy
+        run: |
+          go mod download
+          go mod tidy
       - name: Build
         id: build
         run: make
