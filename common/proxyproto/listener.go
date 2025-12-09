@@ -34,11 +34,10 @@ func (l *Listener) Accept() (net.Conn, error) {
 		}
 		conn = bufio.NewCachedConn(conn, cache)
 	}
+	// Note: Metadata field was removed from AddrConn in sing v0.6.9
+	// Source and destination addresses are available via conn.RemoteAddr() and conn.LocalAddr()
 	if header != nil {
-		return &bufio.AddrConn{Conn: conn, Metadata: M.Metadata{
-			Source:      M.SocksaddrFromNet(header.SourceAddr).Unwrap(),
-			Destination: M.SocksaddrFromNet(header.DestinationAddr).Unwrap(),
-		}}, nil
+		return conn, nil
 	}
 	return conn, nil
 }
