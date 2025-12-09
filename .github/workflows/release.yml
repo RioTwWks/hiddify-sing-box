@@ -54,7 +54,8 @@ jobs:
           key: go118-${{ hashFiles('**/go.sum') }}
       - name: Update go.sum
         run: |
-          go mod download
+          go get github.com/sagernet/sing@v0.6.9
+          go get github.com/sagernet/sing-dns@v0.3.0
           go mod tidy
       - name: Run Test
         run: make
@@ -187,7 +188,8 @@ jobs:
           go-version: ${{ steps.version.outputs.go_version }}
       - name: Update go.sum
         run: |
-          go mod download
+          go get github.com/sagernet/sing@v0.6.9
+          go get github.com/sagernet/sing-dns@v0.3.0
           go mod tidy
       - name: Build
         id: build
