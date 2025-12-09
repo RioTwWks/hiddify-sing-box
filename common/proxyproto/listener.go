@@ -6,7 +6,6 @@ import (
 
 	"github.com/sagernet/sing/common/buf"
 	"github.com/sagernet/sing/common/bufio"
-	M "github.com/sagernet/sing/common/metadata"
 
 	"github.com/pires/go-proxyproto"
 )
