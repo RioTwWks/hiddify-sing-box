@@ -262,7 +262,7 @@ func writeDefaultRule(writer io.Writer, rule option.DefaultHeadlessRule) error {
 		}
 		domainList := []string(rule.Domain)
 		suffixList := []string(rule.DomainSuffix)
-		matcher := domain.NewMatcher(domainList, suffixList)
+		matcher := domain.NewMatcher(domainList, suffixList, false)
 		varbinW := &varbinWriter{Writer: writer}
 		err = matcher.Write(varbinW)
 		if err != nil {

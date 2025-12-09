@@ -175,6 +175,22 @@ func (c *ClientBind) Send(bufs [][]byte, ep conn.Endpoint) error {
 	return nil
 }
 
+func (c *ClientBind) SendWithoutModify(bufs [][]byte, ep conn.Endpoint) error {
+	udpConn, err := c.connect()
+	if err != nil {
+		return err
+	}
+	destination := netip.AddrPort(ep.(Endpoint))
+	for _, b := range bufs {
+		_, err = udpConn.WriteTo(b, M.SocksaddrFromNetIP(destination))
+		if err != nil {
+			udpConn.Close()
+			return err
+		}
+	}
+	return nil
+}
+
 func (c *ClientBind) ParseEndpoint(s string) (conn.Endpoint, error) {
 	ap, err := netip.ParseAddrPort(s)
 	if err != nil {
