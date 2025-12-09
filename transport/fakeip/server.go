@@ -20,7 +20,9 @@ var (
 )
 
 func init() {
-	dns.RegisterTransport([]string{"fakeip"}, NewTransport)
+	dns.RegisterTransport([]string{"fakeip"}, func(name string, ctx context.Context, logger logger.ContextLogger, dialer N.Dialer, link string) (dns.Transport, error) {
+		return NewTransport(name, ctx, logger, dialer, link)
+	})
 }
 
 type Transport struct {
